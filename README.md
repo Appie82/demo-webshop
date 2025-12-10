@@ -10,6 +10,7 @@ A simple fruit shop demo application built with HTML, CSS, and JavaScript. This 
 
 - 🍏 **Product Catalog**: Browse fresh fruits (Apple, Banana, Lemon)
 - 🛒 **Shopping Cart**: Add items to basket and manage your order
+- 🎰 **Slot Machine**: Try the slot machine to add a random fruit to your basket
 
 ## Usage
 
@@ -39,7 +40,7 @@ demo-webshop/
 ├── index.html              # Main product listing page
 ├── basket.html             # Shopping cart page
 ├── checkout.html           # Checkout form page
-├── product-*.html          # Individual product pages
+├── product-*.html          # Individual product pages (now includes product-slot.html)
 ├── style.css               # Main stylesheet
 ├── shop.js                 # JavaScript functionality
 ├── img/                    # Image assets
