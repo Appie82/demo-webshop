@@ -2,6 +2,11 @@ const PRODUCTS = {
   apple: { name: "Apple", emoji: "🍏" },
   banana: { name: "Banana", emoji: "🍌" },
   lemon: { name: "Lemon", emoji: "🍋" },
+  cherry: { name: "Cherry", emoji: "🍒" },
+  melon: { name: "Melon", emoji: "🍉" },
+  grapefruit: { name: "Grapefruit", emoji: "🍊" },
+  blueberry: { name: "Blueberry", emoji: "🫐" },
+  orange: { name: "Orange", emoji: "🍊" },
 };
 
 function getBasket() {

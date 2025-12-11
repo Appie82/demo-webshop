@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slot Machine - Fruit Shop</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Minimal inline styles specific to the slot page */
+      .slot-box { text-align: center; }
+      .slot-reels { font-size: 6rem; display:flex; justify-content:center; gap:1rem; margin:1rem 0; }
+      .slot-reel { width: 4.5rem; height:4.5rem; display:flex; align-items:center; justify-content:center; border-radius:8px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+      .slot-result { margin-top:1rem; font-size:1.1rem; }
+      .cart-action-btn[disabled] { opacity:0.6; cursor:not-allowed; }
+    </style>
+  </head>
+  <body>
+    <header role="banner">
+      <div class="header-center">
+        <a href="index.html" class="logo" aria-label="Go to homepage">
+          <img
+            src="img/fruit-shop-logo.png"
+            class="logo-img"
+            alt="Fruit Shop Logo"
+          />
+          <span class="products-text"> View Products </span>
+        </a>
+        <nav role="navigation" aria-label="Main navigation">
+          <a
+            href="basket.html"
+            class="basket-link"
+            aria-label="View shopping basket"
+          >
+            <img
+              src="img/basket-icon.png"
+              class="basket-img"
+              alt="Shopping basket icon"
+            />
+            <span class="basket-text">View shopping basket</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main id="main-content" role="main">
+      <div class="content-box slot-box">
+        <div class="emoji-display" role="img" aria-label="Slot machine emoji">🎰</div>
+        <h1>Slot Machine</h1>
+        <div class="product-desc" aria-label="Slot description">
+          Spin the reels — whichever fruit you land on will be added to your basket.
+        </div>
+
+        <div class="slot-reels" aria-hidden="false">
+          <div class="slot-reel" id="reel1">🍏</div>
+          <div class="slot-reel" id="reel2">🍌</div>
+          <div class="slot-reel" id="reel3">🍋</div>
+        </div>
+
+        <div class="button-container">
+          <button
+            id="addToBasket"
+            class="cart-action-btn"
+            aria-label="Spin slot and add random fruit to basket"
+          >
+            Spin & Add to Basket
+          </button>
+        </div>
+
+        <div class="slot-result" id="slotResult" aria-live="polite"></div>
+      </div>
+    </main>
+    <footer>
+      <a
+        href="https://www.linkedin.com/in/timlolkema/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        By Tim Lolkema
+      </a>
+    </footer>
+    <script src="shop.js"></script>
+    <script>
+      // Build a list of product keys and their emojis from the global PRODUCTS object
+      const productKeys = Object.keys(PRODUCTS);
+      const productEmojis = productKeys.map((k) => PRODUCTS[k].emoji || "?");
+
+      const reelEls = [
+        document.getElementById("reel1"),
+        document.getElementById("reel2"),
+        document.getElementById("reel3"),
+      ];
+      const resultEl = document.getElementById("slotResult");
+      const button = document.getElementById("addToBasket");
+
+      function randomFruitKey() {
+        const i = Math.floor(Math.random() * productKeys.length);
+        return productKeys[i];
+      }
+
+      // Spin animation: cycle emojis quickly for a duration, then pick a random fruit
+      function spinAndChoose() {
+        if (button.disabled) return;
+        button.disabled = true;
+        resultEl.textContent = "Spinning...";
+
+        const spinInterval = 80; // ms between emoji changes
+        const spinDuration = 1600; // total spin time
+        const start = Date.now();
+
+        // For each reel, set an independent interval so they look asynchronous
+        const timers = reelEls.map((reel, index) => {
+          return setInterval(() => {
+            const emoji = productEmojis[Math.floor(Math.random() * productEmojis.length)];
+            reel.textContent = emoji;
+          }, spinInterval + index * 20);
+        });
+
+        // Stop after spinDuration and pick final fruit (same for all reels)
+        setTimeout(() => {
+          timers.forEach((t) => clearInterval(t));
+
+          const chosenKey = randomFruitKey();
+          const chosenEmoji = PRODUCTS[chosenKey].emoji || "?";
+
+          // show chosen on all reels for clarity
+          reelEls.forEach((r) => (r.textContent = chosenEmoji));
+
+          resultEl.textContent = `You got ${PRODUCTS[chosenKey].name}! Added to basket.`;
+
+          // add to basket using existing function from shop.js
+          try {
+            addToBasket(chosenKey);
+          } catch (e) {
+            console.error("Failed to add to basket:", e);
+            resultEl.textContent = "Oops, something went wrong adding to basket.";
+          }
+
+          button.disabled = false;
+        }, spinDuration);
+      }
+
+      document.getElementById("addToBasket").onclick = spinAndChoose;
+    </script>
+  </body>
+</html>
